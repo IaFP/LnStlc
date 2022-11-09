@@ -1,4 +1,4 @@
-module AssocLists where
+module Lib.AssocLists where
 
 
 open import Data.String using (String)
@@ -25,6 +25,7 @@ open import Data.List.Membership.Propositional.Properties
 
 --------------------------------------------------------------------------------
 -- Associative lists in Agda.
+-- We use these for environments : List (Atom × Type).
 
 dom : ∀ {A B : Set} → List (A × B) → List A
 dom = map proj₁

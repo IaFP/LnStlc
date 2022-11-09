@@ -22,8 +22,8 @@ open import Data.List.Relation.Unary.Any using (Any; here; there)
 open import Data.List.Membership.Propositional using (_∈_;_∉_)
 open import Data.List.Membership.Propositional.Properties
 
-open import STLC
-open import AssocLists
+open import Lang.Syntax
+open import Lib.AssocLists
 
 --------------------------------------------------------------------------------
 -- Preservation of the CBV STLC λ→ in the Locally Nameless style as per Charguerárd.

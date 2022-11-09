@@ -1,4 +1,4 @@
-module STLC where
+module Lang.Syntax where
 
 -- TODO:
 -- Remove unused imports. Organize the rest.
@@ -25,7 +25,7 @@ open import Data.List.Relation.Unary.Any using (Any; here; there)
 open import Data.List.Membership.Propositional using (_∈_;_∉_)
 open import Data.List.Membership.Propositional.Properties
 
-open import AssocLists
+open import Lib.AssocLists
 
 
 
@@ -164,88 +164,3 @@ opening≡subst k (`λ t) u x x#t  = cong `λ (opening≡subst (suc k) t u x x#t
 opening≡subst k (t₁ · t₂) u x x#t with  cong#· {x} {t₁} {t₂} x#t
 ... | ⟨ x#t₁ , x#t₂ ⟩ = cong₂ _·_ (opening≡subst k t₁ u x x#t₁) (opening≡subst k t₂ u x x#t₂)
     
-
---------------------------------------------------------------------------------
--- Environments
-
-Env : Set
-Env = List (Atom × Type)
-
-
--- Well-formedness
-data ⊢ : Env → Set where
-  ⊢Nil :
-       ----------
-          ⊢ []
-  ⊢Cons : ∀ {Γ x T} →
-       ⊢ Γ   →   x ∉ dom Γ →
-       -------------------------
-           ⊢ (⟨ x , T ⟩ ∷ Γ)
-           
---------------------------------------------------------------------------------
--- Typing
-
-data _⊢_⦂_ : Env → Term → Type → Set where
-  ⊢Var : ∀ {Γ x T} →
-       ⊢ Γ   →   (⟨ x , T ⟩ ∈ Γ) →
-       -------------------------
-       Γ ⊢ (fvar x) ⦂ T
-       
-  ⊢App : ∀ {Γ M N T₁ T₂} →
-         Γ ⊢ M ⦂ (T₁ —→ T₂)   →   Γ ⊢ N ⦂ T₁ →
-         ----------------------------------
-              Γ ⊢ M · N ⦂ T₂
-              
-  ⊢Abs : ∀ {Γ L M T₁ T₂} →
-         (∀ x → x ∉ L → (⟨ x , T₁ ⟩ ∷ Γ) ⊢ M ^ₜ (fvar x) ⦂ T₂) →
-         -------------------------------------------------------
-         Γ ⊢ (`λ M) ⦂ (T₁ —→ T₂)
-
---------------------------------------------------------------------------------
--- Local closure (LN)
-
-data lc : Term → Set where
-  lcₓ : ∀ x →
-
-        ------------
-        lc (fvar x)
-
-  lc· : ∀ t₁ t₂ →
-        lc t₁   →   lc t₂ →
-        ---------------------
-            lc (t₁ · t₂)
-
-  lcλ : ∀ L t →
-        (∀ x → x  ∉ L → lc (t ^ x)) →
-        -------------------------------
-                 lc (`λ t)
-
--- body t ⇔ lc (abs t)
-body : Term → Set
-body t = ∃[ L ] ( ∀ x → x ∉ L → lc (t ^ x) )
-
-             
---------------------------------------------------------------------------------
--- Call By Value β-Reduction
-
-data _—→β_ : Term → Term → Set where
-  β :  ∀ t u →
-       (body t)   →   lc u →
-       ----------------------
-       ((`λ t) · u) —→β (t ^ₜ u)
-
-  β·₁ : ∀ t₁ t₁' t₂ →
-        t₁ —→β t₁'   →   lc t₂ →
-        ---------------------------
-        (t₁ · t₂) —→β (t₁' · t₂)
-
-  β·₂ : ∀ t₁ t₂ t₂' →
-        lc t₁   →   t₂ —→β t₂' →
-        ---------------------------
-        (t₁ · t₂) —→β (t₁ · t₂')
-
-  βλ  : ∀ L t t' →
-        (∀ x → x ∉ L → (t ^ x) —→β (t' ^ x)) →
-        -----------------------------------------
-                  (`λ t) —→β (`λ t')
-
