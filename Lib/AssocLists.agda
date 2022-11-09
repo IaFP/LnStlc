@@ -39,3 +39,12 @@ img = map proj₂
 ∈-dom⁻ a xs a∈xs with ∈-map⁻ proj₁ a∈xs
 ... | ⟨ ⟨ a' , b ⟩ , ⟨ a'b∈xs , a≡a' ⟩ ⟩ rewrite a≡a' = ⟨ b , a'b∈xs ⟩
 
+
+--------------------------------------------------------------------------------
+-- Other util
+
+curry : ∀ {ℓ} {A B C : Set ℓ} → ((A × B) → C) → (A → B → C)
+curry f a b = f ⟨ a , b ⟩
+
+uncurry : ∀ {ℓ} {A B C : Set ℓ} → (A → B → C) → (A × B) → C
+uncurry f ⟨ a , b ⟩ = f a b

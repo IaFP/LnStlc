@@ -112,6 +112,30 @@ infix 5 _[_/_]
 _[_/_] : Term → Term → Atom → Term
 t [ v / x ] = subst x t v
 
+
+--------------------------------------------------------------------------------
+-- Local closure (LN)
+
+data lc : Term → Set where
+  lcₓ : ∀ x →
+
+        ------------
+        lc (fvar x)
+
+  lc· : ∀ t₁ t₂ →
+        lc t₁   →   lc t₂ →
+        ---------------------
+            lc (t₁ · t₂)
+
+  lcλ : ∀ L t →
+        (∀ x → x  ∉ L → lc (t ^ x)) →
+        -------------------------------
+                 lc (`λ t)
+
+-- body t ⇔ lc (abs t)
+body : Term → Set
+body t = ∃[ L ] ( ∀ x → x ∉ L → lc (t ^ x) )
+
 --------------------------------------------------------------------------------
 -- Term Opening (LN)
 -- ... means to replace a **bound var k** with **term u**.
