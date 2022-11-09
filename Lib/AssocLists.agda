@@ -1,4 +1,4 @@
-module Lib.AssocLists where
+module LnStlc.Lib.AssocLists where
 
 
 open import Data.String using (String)

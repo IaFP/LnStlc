@@ -1,4 +1,4 @@
-module Preservation where
+module LnStlc.Theory.Preservation where
 
 open import Data.String using (String)
 open import Data.Nat using (ℕ ; suc)
@@ -22,11 +22,14 @@ open import Data.List.Relation.Unary.Any using (Any; here; there)
 open import Data.List.Membership.Propositional using (_∈_;_∉_)
 open import Data.List.Membership.Propositional.Properties
 
-open import Lang.Syntax
-open import Lib.AssocLists
+open import LnStlc.Lib.AssocLists
+open import LnStlc.Lang.Syntax
+open import LnStlc.Lang.StaticSemantics
+
 
 --------------------------------------------------------------------------------
--- Preservation of the CBV STLC λ→ in the Locally Nameless style as per Charguerárd.
+-- Preservation of the CBV STLC λ→ in the Locally Nameless style as per
+-- Charguerárd.
 
 --------------------------------------------------------------------------------
 -- Weakening

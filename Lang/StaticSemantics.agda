@@ -1,4 +1,4 @@
-module Lang.StaticSemantics where
+module LnStlc.Lang.StaticSemantics where
 
 -- TODO:
 -- Remove unused imports. Organize the rest.
@@ -25,8 +25,8 @@ open import Data.List.Relation.Unary.Any using (Any; here; there)
 open import Data.List.Membership.Propositional using (_∈_;_∉_)
 open import Data.List.Membership.Propositional.Properties
 
-open import Lib.AssocLists
-open import Lang.Syntax
+open import LnStlc.Lib.AssocLists
+open import LnStlc.Lang.Syntax
 
 --------------------------------------------------------------------------------
 -- Environments
