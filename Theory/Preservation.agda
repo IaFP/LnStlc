@@ -30,6 +30,16 @@ open import LnStlc.Lang.StaticSemantics
 -- Charguerárd.
 
 --------------------------------------------------------------------------------
+-- Auxiliary lemmas
+
+Γ-unique : ∀ {Γ x T U} →
+  ⊢ ((⟨ x , U ⟩) ∷ Γ)   →   ⟨ x , T ⟩ ∈ (⟨ x , U ⟩ ∷ Γ) →
+  --------------------------------------------------------
+                          T ≡ U
+Γ-unique {Γ} {x} {T} {.T} _ (here refl) = refl
+Γ-unique {Γ} {x} {T} {U} (⊢Cons ⊢Γ x∉domΓ) (there Q) = ⊥-elim (x∉domΓ (∈-dom⁺ x T Γ Q ))
+
+--------------------------------------------------------------------------------
 -- Weakening
 
 weakening : ∀ E F G M T →
@@ -73,17 +83,21 @@ weakening E F G .(`λ M) .(T₁ —→ T₂) wf
 --------------------------------------------------------------------------------
 -- Substitution
 
--- N.B. Need regularity.
 substitution : ∀ E z u U F t T →
                (E ++ [ ⟨ z , U ⟩ ] ++ F) ⊢ t ⦂ T   →   E ⊢ u ⦂ U →
                --------------------------------------------------
                         (E ++ F) ⊢ t [ u / z ] ⦂ T
--- I think the idea here is to show that z is free in (fvar x) because of env
--- well-formedness, which we can get from regularity.
 
--- It is time to go back to drawing board!
-substitution E z u U F (fvar x) T EzuF⊢t⦂T E⊢u⦂U with =dec z x -- = {!!}
-... | yes z≡x = {!!}
-... | no _    = ⊢Var {!!} {!!}
-substitution E z u U F (`λ t) T EzuF⊢t⦂T E⊢u⦂U    = {!!}
-substitution E z u U F (t₁ · t₂) T EzuF⊢t⦂T E⊢u⦂U = {!!}
+substitution E z u U F .(fvar x) T (⊢Var {x = x} ⊢EzF x∈EuF) E⊢u⦂U with =dec z x | ∈-++⁻  E x∈EuF
+... | yes z≡x | inj₁ x⦂t∈E   = {!!}
+... | yes z≡x | inj₂ x⦂t∈zuF = {!!}
+... | no p | inj₁ a = {!!}
+... | no p | inj₂ y = {!!}
+-- -- I need a uniqueness proof on x
+-- --  if (x : T) ∈ E ++ (x : U) :: F and ⊢ E ++ (x : U) :: F, then T ≡ U.
+-- ... | yes z≡x rewrite z≡x = {! !}
+-- ... | no  z≠x with ∈-++⁻ E x∈EuF
+-- ... | inj₁ x∈E   = {!!}
+-- ... | inj₂ x∈zUF = {!!}
+substitution E z u U F .(_ · _) T (⊢App c c₁) E⊢u⦂U = {!!}
+substitution E z u U F .(`λ _) .(_ —→ _) (⊢Abs x) E⊢u⦂U = {!!}
