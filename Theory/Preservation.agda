@@ -88,13 +88,13 @@ substitution : ∀ E z u U F t T →
                --------------------------------------------------
                         (E ++ F) ⊢ t [ u / z ] ⦂ T
 
-substitution E z u U F .(fvar x) T (⊢Var {x = x} ⊢EzF x∈EuF) E⊢u⦂U with =dec z x | ∈-++⁻  E x∈EuF
-... | yes z≡x | inj₁ x⦂t∈E   = {!!}
-... | yes z≡x | inj₂ x⦂t∈zuF = {!!}
-... | no p | inj₁ a = {!!}
-... | no p | inj₂ y = {!!}
--- -- I need a uniqueness proof on x
--- --  if (x : T) ∈ E ++ (x : U) :: F and ⊢ E ++ (x : U) :: F, then T ≡ U.
+substitution E z u U F .(fvar x) T (⊢Var {x = x} ⊢EzF x∈EuF) E⊢u⦂U with =dec z x | ∈-++⁻  E x∈EuF | ⊢EzF
+... | yes z≡x | inj₁ x⦂t∈E | pfft rewrite z≡x  = {!!}
+... | yes z≡x | inj₂ x⦂t∈zuF | pfft = {!⊢EzF!}
+... | no p | inj₁ a | pfft = {!!}
+... | no p | inj₂ y | pfft = {!!}
+-- I need a uniqueness proof on x
+--  if (x : T) ∈ E ++ (x : U) :: F and ⊢ E ++ (x : U) :: F, then T ≡ U.
 -- ... | yes z≡x rewrite z≡x = {! !}
 -- ... | no  z≠x with ∈-++⁻ E x∈EuF
 -- ... | inj₁ x∈E   = {!!}
