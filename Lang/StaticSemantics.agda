@@ -48,7 +48,7 @@ data _⊢_⦂_ : Env → Term → Type → Set where
        
   ⊢App : ∀ {Γ M N T₁ T₂} →
          Γ ⊢ M ⦂ (T₁ —→ T₂)   →   Γ ⊢ N ⦂ T₁ →
-         ----------------------------------
+         -------------------------------------
               Γ ⊢ M · N ⦂ T₂
               
   ⊢Abs : ∀ {Γ L M T₁ T₂} →
@@ -83,3 +83,7 @@ regularity {Γ} {(`λ M)} {.(_ —→ _)} (⊢Abs {L = L} cof) with atomFresh L
 
 ⊢Regular = proj₁ ∘ regularity
 lcRegular = proj₂ ∘ regularity
+
+
+--------------------------------------------------------------------------------
+-- Well formedness implies freshness of each var in .

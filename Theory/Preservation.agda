@@ -76,10 +76,14 @@ weakening E F G .(`λ M) .(T₁ —→ T₂) wf
 -- N.B. Need regularity.
 substitution : ∀ E z u U F t T →
                (E ++ [ ⟨ z , U ⟩ ] ++ F) ⊢ t ⦂ T   →   E ⊢ u ⦂ U →
-               -------------------------------------------------
+               --------------------------------------------------
                         (E ++ F) ⊢ t [ u / z ] ⦂ T
 -- I think the idea here is to show that z is free in (fvar x) because of env
 -- well-formedness, which we can get from regularity.
-substitution E z u U F (fvar x) T EzuF⊢t⦂T E⊢u⦂U = {!!}
-substitution E z u U F (`λ t) T EzuF⊢t⦂T E⊢u⦂U = {!!}
-substitution E z u U F (t · t₁) T EzuF⊢t⦂T E⊢u⦂U = {!!}
+
+-- It is time to go back to drawing board!
+substitution E z u U F (fvar x) T EzuF⊢t⦂T E⊢u⦂U with =dec z x -- = {!!}
+... | yes z≡x = {!!}
+... | no _    = ⊢Var {!!} {!!}
+substitution E z u U F (`λ t) T EzuF⊢t⦂T E⊢u⦂U    = {!!}
+substitution E z u U F (t₁ · t₂) T EzuF⊢t⦂T E⊢u⦂U = {!!}
