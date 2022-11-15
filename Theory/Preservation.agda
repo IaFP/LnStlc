@@ -71,10 +71,10 @@ weakening E F G .(`λ M) .(T₁ —→ T₂) wf
         x∉L x∈L = x∉L' (∈-++⁺ˡ x∈L)
 
         x∉domEFG : x ∉ dom (E ++ F ++ G)
-        x∉domEFG x∈domEFG with ∈-dom-homomorphic x E (F ++ G) x∈domEFG
+        x∉domEFG x∈domEFG with ∈-dom-homomorphic→ x E (F ++ G) x∈domEFG
         ... | x∈domE++domFG with ∈-++⁻ (dom E) x∈domE++domFG
         ... | inj₁ x∈domE  = x∉L' (∈-++⁺ʳ L  (∈-++⁺ˡ x∈domE))
-        ... | inj₂ x∈domFG with ∈-dom-homomorphic x F G x∈domFG
+        ... | inj₂ x∈domFG with ∈-dom-homomorphic→ x F G x∈domFG
         ... | x∈domF++domG = x∉L' ( (∈-++⁺ʳ L  (∈-++⁺ʳ (dom E) x∈domF++domG))) 
 
         ⊢x∷E++F++G : ⊢ (⟨ x , T₁ ⟩ ∷ E ++ F ++ G)
@@ -88,16 +88,17 @@ substitution : ∀ E z u U F t T →
                --------------------------------------------------
                         (E ++ F) ⊢ t [ u / z ] ⦂ T
 
-substitution E z u U F .(fvar x) T (⊢Var {x = x} ⊢EzF x∈EuF) E⊢u⦂U with =dec z x | ∈-++⁻  E x∈EuF | ⊢EzF
-... | yes z≡x | inj₁ x⦂t∈E | pfft rewrite z≡x  = {!!}
-... | yes z≡x | inj₂ x⦂t∈zuF | pfft = {!⊢EzF!}
-... | no p | inj₁ a | pfft = {!!}
-... | no p | inj₂ y | pfft = {!!}
+substitution E z u U F .(fvar x) T (⊢Var {x = x} ⊢EzF x∈EuF) E⊢u⦂U with =dec z x | ∈-++⁻  E x∈EuF | ⊢decompose E _ ⊢EzF
 -- I need a uniqueness proof on x
 --  if (x : T) ∈ E ++ (x : U) :: F and ⊢ E ++ (x : U) :: F, then T ≡ U.
--- ... | yes z≡x rewrite z≡x = {! !}
--- ... | no  z≠x with ∈-++⁻ E x∈EuF
--- ... | inj₁ x∈E   = {!!}
--- ... | inj₂ x∈zUF = {!!}
+
+... | yes z≡x | inj₁ x⦂t∈E | _ rewrite z≡x  = {!!}
+... | yes z≡x | inj₂ x⦂t∈zuF | _  = {!!}
+... | no p | inj₁ x⦂T∈E | ⟨ ⊢E , ⊢zuF ⟩  = ⊢Var (strengthen E [ ⟨ z , U ⟩ ] F ⊢EzF) (∈-++⁺ˡ x⦂T∈E)
+-- This case has some work left: We know that x ∈ E ++ [u] ++ F and that x ≠ u,
+-- and would like to conclude that x ∈ E ++ F. So we need to show that either
+-- (i) it is in E; (ii) if it is in [u], a contradiction; (iii) it is in F.
+... | no p | inj₂ x∶T∈zUF | ⟨ ⊢E , ⊢zuF ⟩ = ⊢Var ((strengthen E [ ⟨ z , U ⟩ ] F ⊢EzF)) {!∈-insert E!}
+
 substitution E z u U F .(_ · _) T (⊢App c c₁) E⊢u⦂U = {!!}
 substitution E z u U F .(`λ _) .(_ —→ _) (⊢Abs x) E⊢u⦂U = {!!}

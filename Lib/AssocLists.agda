@@ -10,6 +10,9 @@ open import Data.List.Properties
 open import Data.List.Membership.Propositional using (_∈_;_∉_)
 open import Data.List.Membership.Propositional.Properties
 
+open import Relation.Binary.PropositionalEquality
+  using (_≡_; _≢_; refl; sym; cong; cong₂ ; cong-app)
+
 --------------------------------------------------------------------------------
 -- Associative lists in Agda.
 -- We use these for environments : List (Atom × Type).
@@ -20,13 +23,21 @@ dom = map proj₁
 img :  ∀ {A B : Set} → List (A × B) → List B
 img = map proj₂
 
-∈-dom-homomorphic : ∀ {A B : Set}
+∈-dom-homomorphic→ : ∀ {A B : Set}
                     (x : A)
                     (xs ys : List (A × B)) →
                     x ∈ dom (xs ++ ys) →
                     x ∈ dom xs ++ dom ys
-∈-dom-homomorphic x xs ys x∈xs++ys
-  rewrite map-++-commute proj₁ xs ys = x∈xs++ys                  
+∈-dom-homomorphic→ x xs ys x∈xs++ys
+  rewrite map-++-commute proj₁ xs ys = x∈xs++ys
+  
+∈-dom-homomorphic← : ∀ {A B : Set}
+                    (x : A)
+                    (xs ys : List (A × B)) →
+                    x ∈ dom xs ++ dom ys →
+                    x ∈ dom (xs ++ ys)
+∈-dom-homomorphic← x xs ys x∈xs++ys
+  rewrite map-++-commute proj₁ xs ys = x∈xs++ys                    
 
 ∈-dom⁺ : ∀ {A B} (a : A) (b : B) xs →
                   ⟨ a , b ⟩ ∈ xs →
@@ -48,3 +59,9 @@ curry f a b = f ⟨ a , b ⟩
 
 uncurry : ∀ {ℓ} {A B C : Set ℓ} → (A → B → C) → (A × B) → C
 uncurry f ⟨ a , b ⟩ = f a b
+
+-- RENAME AND MOVE ME. Also, this should already be defined somewhere in
+-- standard lib?
+singleton : ∀ {A : Set} (x : A) xs → x ∷ xs ≡ [ x ] ++ xs
+singleton x [] = refl
+singleton x (y ∷ ys) rewrite singleton y ys = refl
