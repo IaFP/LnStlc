@@ -92,8 +92,14 @@ substitution E z u U F .(fvar x) T (⊢Var {x = x} ⊢EzF x∈EuF) E⊢u⦂U wit
 -- I need a uniqueness proof on x
 --  if (x : T) ∈ E ++ (x : U) :: F and ⊢ E ++ (x : U) :: F, then T ≡ U.
 
-... | yes z≡x | inj₁ x⦂t∈E | _ rewrite z≡x  = {!!}
-... | yes z≡x | inj₂ x⦂t∈zuF | _  = {!!}
+... | yes z≡x | inj₁ x⦂t∈E | _ rewrite z≡x         = {!!}
+... | yes z≡x | inj₂ (here refl) | _  = {!!} 
+
+--let
+                                        --  ⊢EF    = (strengthen E [ ⟨ z , U ⟩ ] F ⊢EzF)
+                                        --  EF⊢u⦂U = {!!}
+                                        -- in {!weakening E [ ⟨ z , U ⟩ ] F u U ?!} -- weakening E [ ⟨ z , U ⟩ ] F u U {!!}--
+... | yes z≡x | inj₂ (there y) | _  = {!!}
 ... | no p | inj₁ x⦂T∈E | ⟨ ⊢E , ⊢zuF ⟩  = ⊢Var (strengthen E [ ⟨ z , U ⟩ ] F ⊢EzF) (∈-++⁺ˡ x⦂T∈E)
 -- This case has some work left: We know that x ∈ E ++ [u] ++ F and that x ≠ u,
 -- and would like to conclude that x ∈ E ++ F. So we need to show that either
